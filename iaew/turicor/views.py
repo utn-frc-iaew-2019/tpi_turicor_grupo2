@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from zeep import Client
 
 from turicor.models import Reserva, Cliente
+from turicor.serializers import ReservasSerializer
 
 
 @api_view(['GET'])
@@ -139,19 +140,21 @@ def reservar_vehiculo(request, vehiculo_id):
     # respuesta.Reserva
     reserva = Reserva(
         codigo=respuesta.Reserva.CodigoReserva,
-        estado=respuesta.Reserva.Estado,
-        fecha_reserva=respuesta.Reserva.FechaReserva,
-        fecha_hora_retiro=respuesta.Reserva.FechaHoraRetiro,
-        fecha_hora_devolucion=respuesta.Reserva.FechaHoraDevolucion,
-        lugar_retiro=respuesta.Reserva.LugarRetiro,
-        lugar_devolucion=respuesta.Reserva.LugarDevolucion,
         cliente_id=1,
         precio_costo=respuesta.Reserva.TotalReserva,
-        precio_venta=respuesta.Reserva.TotalReserva / Decimal(1 - settings.IAEW_SETTINGS['ganancia']),
-        vehiculo_id=vehiculo_id
+        precio_venta=respuesta.Reserva.TotalReserva / Decimal(1 - settings.IAEW_SETTINGS['ganancia'])
     )
     reserva.save()
 
     return Response({
         "codigo_reserva": reserva.codigo
     }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def get_reservas_list(request):
+    cliente_id = 1  # TODO: Get client id.
+
+    reservas = ReservasSerializer(Reserva.objects.filter(cliente_id=cliente_id), many=True)
+
+    return Response(reservas.data)

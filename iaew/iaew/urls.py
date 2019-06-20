@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/paises/', views.get_paises_list),
     path('api/vehiculos/', views.get_vehiculos_list),
     path('api/vehiculos/<int:vehiculo_id>/reservar', views.reservar_vehiculo),
+    path('api/reservas/', views.get_reservas_list)
 ]
