@@ -191,3 +191,16 @@ def detalle_reserva(request, codigo):
     }
 
     return Response(reserva)
+
+
+@api_view(['POST'])
+def cancelar_reserva(request, codigo):
+    wsdl_settings = settings.IAEW_SETTINGS['wsdl']
+    client = Client(wsdl=wsdl_settings['url'])
+    respuesta = client.service.CancelarReserva(
+        CancelarReservaRequest={'CodigoReserva': codigo},
+        _soapheaders={'Credentials': wsdl_settings['Credentials']})
+
+    Reserva.objects.filter(codigo=codigo).update(fecha_cancelacion=respuesta.TimeStamp)
+
+    return Response("Reserva cancelada.")

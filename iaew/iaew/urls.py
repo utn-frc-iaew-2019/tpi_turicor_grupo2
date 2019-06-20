@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/vehiculos/<int:vehiculo_id>/reservar', views.reservar_vehiculo),
     path('api/reservas/', views.get_reservas_list),
     path('api/reservas/<codigo>', views.detalle_reserva),
+    path('api/reservas/<codigo>/cancelar', views.cancelar_reserva),
 ]
