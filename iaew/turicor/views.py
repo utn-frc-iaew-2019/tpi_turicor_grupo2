@@ -158,3 +158,36 @@ def get_reservas_list(request):
     reservas = ReservasSerializer(Reserva.objects.filter(cliente_id=cliente_id), many=True)
 
     return Response(reservas.data)
+
+
+@api_view(['GET'])
+def detalle_reserva(request, codigo):
+    wsdl_settings = settings.IAEW_SETTINGS['wsdl']
+    # Get ciudades from SOAP
+    client = Client(wsdl=wsdl_settings['url'])
+    respuesta = client.service.ConsultarReserva(
+        ConsultarReservaRequest={'CodigoReserva': codigo},
+        _soapheaders={'Credentials': wsdl_settings['Credentials']})
+
+    # Get precio reserva from BD
+    precio = Reserva.objects.get(codigo=codigo).precio_venta
+
+    # Serialize
+    reserva = {
+        "codigo": respuesta.Reserva.CodigoReserva,
+        "nombre_apellido": respuesta.Reserva.ApellidoNombreCliente,
+        "dni": respuesta.Reserva.NroDocumentoCliente,
+        "estado": respuesta.Reserva.Estado,
+        "fecha_reserva": respuesta.Reserva.FechaReserva,
+        "fecha_cancelacion": respuesta.Reserva.FechaCancelacion,
+        "fecha_hora_retiro": respuesta.Reserva.FechaHoraRetiro,
+        "fecha_hora_devolucion": respuesta.Reserva.FechaHoraDevolucion,
+        "lugar_retiro": respuesta.Reserva.LugarRetiro,
+        "lugar_devolucion": respuesta.Reserva.LugarDevolucion,
+        "precio": precio,
+        "vehiculo_id": respuesta.Reserva.VehiculoPorCiudadId,
+        # respuesta.Reserva.VehiculoPorCiudadEntity.VehiculoEntity vuelve vacio.
+        # No estan los datos del vehiculo ni la ciudad.
+    }
+
+    return Response(reserva)
