@@ -43,7 +43,8 @@ IAEW_SETTINGS = {
             'UserName': 'grupo_nro2',
             'Password': 'XdSkx6A9NQ'
         }
-    }
+    },
+    'ganancia': 0.20
 }
 
 INSTALLED_APPS = [

@@ -26,4 +26,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/paises/<int:pais_id>/ciudades/', views.get_ciudades_list),
     path('api/paises/', views.get_paises_list),
+    path('api/vehiculos/', views.get_vehiculos_list),
 ]
