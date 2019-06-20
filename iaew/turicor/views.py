@@ -7,6 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from zeep import Client
 
+from turicor.models import Reserva, Cliente
+
 
 @api_view(['GET'])
 def get_paises_list(request):
@@ -76,8 +78,8 @@ def get_vehiculos_list(request):
     vehiculos = []
     for vehiculo in respuesta.VehiculosEncontrados.VehiculoModel:
         vehiculos.append({
-            "id": vehiculo.Id,
-            "vehiculo_ciudad_id": vehiculo.VehiculoCiudadId,
+            # "id": vehiculo.Id,
+            "id": vehiculo.VehiculoCiudadId,
             "ciudad_id": vehiculo.CiudadId,
             "marca": vehiculo.Marca,
             "modelo": vehiculo.Modelo,
@@ -93,3 +95,63 @@ def get_vehiculos_list(request):
         })
 
     return Response(vehiculos)
+
+
+@api_view(['POST'])
+def reservar_vehiculo(request, vehiculo_id):
+    lugar_retiro = request.data.get('lugar_retiro', None)
+    lugar_devolucion = request.data.get('lugar_devolucion', None)
+    if None in [lugar_retiro, lugar_devolucion]:
+        return Response("Lugar invalido", status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        desde = parse_datetime(request.data.get('desde', None))  # yyyy-mm-ddThh:mm:ss (optional timezone:-0300)
+        hasta = parse_datetime(request.data.get('hasta', None))  # yyyy-mm-ddThh:mm:ss
+    except ValueError or TypeError:
+        return Response("Fechas invalidas",
+                        status=status.HTTP_400_BAD_REQUEST)  # Valid format but non-existent datetime.
+
+    # Make reserva on SOAP
+    wsdl_settings = settings.IAEW_SETTINGS['wsdl']
+    client = Client(wsdl=wsdl_settings['url'])
+
+    factory = client.type_factory('ns2')
+
+    request = factory.ReservarVehiculoRequest(
+        IdVehiculoCiudad=vehiculo_id,
+        ApellidoNombreCliente="Prueba",  # TODO: Get client info from auth.
+        NroDocumentoCliente=11111111,
+        FechaHoraRetiro=desde,
+        FechaHoraDevolucion=hasta,
+        LugarRetiro=factory.LugarRetiroDevolucion(lugar_retiro),  # TODO: Validar 'Aeropuerto', 'TerminalBuses', 'Hotel'
+        LugarDevolucion=factory.LugarRetiroDevolucion(lugar_devolucion)
+    )
+
+    respuesta = client.service.ReservarVehiculo(
+        ReservarVehiculoRequest=request,
+        _soapheaders={'Credentials': wsdl_settings['Credentials']})
+
+    # TODO: Remove this. Use Auth.
+    # DEBUG ONLY
+    Cliente.objects.get_or_create(pk=1, nombre="Prueba", apellido="Prueba", dni=1111111)
+
+    # Serialize
+    # respuesta.Reserva
+    reserva = Reserva(
+        codigo=respuesta.Reserva.CodigoReserva,
+        estado=respuesta.Reserva.Estado,
+        fecha_reserva=respuesta.Reserva.FechaReserva,
+        fecha_hora_retiro=respuesta.Reserva.FechaHoraRetiro,
+        fecha_hora_devolucion=respuesta.Reserva.FechaHoraDevolucion,
+        lugar_retiro=respuesta.Reserva.LugarRetiro,
+        lugar_devolucion=respuesta.Reserva.LugarDevolucion,
+        cliente_id=1,
+        precio_costo=respuesta.Reserva.TotalReserva,
+        precio_venta=respuesta.Reserva.TotalReserva / Decimal(1 - settings.IAEW_SETTINGS['ganancia']),
+        vehiculo_id=vehiculo_id
+    )
+    reserva.save()
+
+    return Response({
+        "codigo_reserva": reserva.codigo
+    }, status=status.HTTP_201_CREATED)
