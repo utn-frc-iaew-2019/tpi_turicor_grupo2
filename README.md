@@ -10,3 +10,10 @@ En linux, python se encuentra en /usr/bin/python3.5 se pueden usar las versiones
 
 > pip install -r requirements.txt
 
+> python manage.py makemigrations
+
+> python manage.py migrate
+
+# Run
+
+> python manage.py runserver
