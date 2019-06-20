@@ -1,0 +1,188 @@
+{
+  "info": {
+    "_postman_id": "52394b76-dd22-411f-994b-5299486c7337",
+    "name": "IAEW",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Paises",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/paises",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "paises"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ciudades",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/paises/1/ciudades",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "paises",
+            "1",
+            "ciudades"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vehiculos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/vehiculos?ciudad_id=1&desde=2019-06-20T15:00:00&hasta=2019-06-22T15:00:00",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "vehiculos"
+          ],
+          "query": [
+            {
+              "key": "ciudad_id",
+              "value": "1"
+            },
+            {
+              "key": "desde",
+              "value": "2019-06-20T15:00:00"
+            },
+            {
+              "key": "hasta",
+              "value": "2019-06-22T15:00:00"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"lugar_retiro\": \"Aeropuerto\",\n\t\"lugar_devolucion\": \"Aeropuerto\",\n\t\"desde\": \"2019-06-20T15:00:00\",\n\t\"hasta\": \"2019-06-21T15:00:00\"\n}"
+        },
+        "url": {
+          "raw": "localhost:8000/api/vehiculos/4/reservar",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "vehiculos",
+            "4",
+            "reservar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "localhost:8000/api/reservas",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "reservas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Detalle Reserva",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8000/api/reservas/PLQAT",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "reservas",
+            "PLQAT"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancelar Reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "localhost:8000/api/reservas/PLQAT/cancelar",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "reservas",
+            "PLQAT",
+            "cancelar"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
