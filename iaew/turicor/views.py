@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from zeep import Client
 
-from turicor.models import Reserva, Cliente
-from turicor.serializers import ReservasSerializer
+from .models import Reserva, Cliente
+from .serializers import ReservasSerializer
 
 
 @api_view(['GET'])

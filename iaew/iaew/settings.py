@@ -36,6 +36,15 @@ REST_FRAMEWORK = {
     ]
 }
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '751128658030-hcj5c07ic1549qsqca2v6h366t2tn7uh.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '3ffQKW8See8hy8WT44ViQilQ'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/static/'
+
 IAEW_SETTINGS = {
     'wsdl': {
         'url': 'http://rubenromero-001-site1.itempurl.com/WCFReservaVehiculos.svc?singleWsdl',
@@ -56,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'social_django',
     'turicor'
 ]
 
@@ -82,6 +92,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

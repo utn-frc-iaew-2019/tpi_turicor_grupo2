@@ -26,7 +26,6 @@ schema_view = get_swagger_view(title='IAEW 2019')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
     path('api/paises/<int:pais_id>/ciudades/', views.get_ciudades_list),
     path('api/paises/', views.get_paises_list),
     path('api/vehiculos/', views.get_vehiculos_list),
@@ -34,5 +33,8 @@ urlpatterns = [
     path('api/reservas/', views.get_reservas_list),
     path('api/reservas/<codigo>', views.detalle_reserva),
     path('api/reservas/<codigo>/cancelar', views.cancelar_reserva),
-    path('api-swagger/', schema_view)
+    path('api-swagger/', schema_view),
+
+    # Login using api/auth/login/google-oauth2?next={Redirect_URL}
+    path('api/auth/', include('social_django.urls', namespace='social')),
 ]
