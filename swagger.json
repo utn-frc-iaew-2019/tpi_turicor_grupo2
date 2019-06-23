@@ -1,0 +1,111 @@
+{
+  "_type": "document",
+  "_meta": {
+    "url": "http://localhost:8000/api-swagger/",
+    "title": "IAEW 2019"
+  },
+  "api": {
+    "paises": {
+      "ciudades": {
+        "list": {
+          "_type": "link",
+          "url": "/api/paises/{pais_id}/ciudades/",
+          "action": "get",
+          "fields": [
+            {
+              "name": "pais_id",
+              "required": true,
+              "location": "path",
+              "schema": {
+                "_type": "string",
+                "description": "",
+                "title": ""
+              }
+            }
+          ]
+        }
+      },
+      "list": {
+        "_type": "link",
+        "url": "/api/paises/",
+        "action": "get"
+      }
+    },
+    "reservas": {
+      "cancelar": {
+        "create": {
+          "_type": "link",
+          "url": "/api/reservas/{codigo}/cancelar",
+          "action": "post",
+          "fields": [
+            {
+              "name": "codigo",
+              "required": true,
+              "location": "path",
+              "schema": {
+                "_type": "string",
+                "description": "",
+                "title": ""
+              }
+            }
+          ]
+        }
+      },
+      "list": {
+        "_type": "link",
+        "url": "/api/reservas/",
+        "action": "get"
+      },
+      "read": {
+        "_type": "link",
+        "url": "/api/reservas/{codigo}",
+        "action": "get",
+        "fields": [
+          {
+            "name": "codigo",
+            "required": true,
+            "location": "path",
+            "schema": {
+              "_type": "string",
+              "description": "",
+              "title": ""
+            }
+          }
+        ]
+      }
+    },
+    "vehiculos": {
+      "reservar": {
+        "create": {
+          "_type": "link",
+          "url": "/api/vehiculos/{vehiculo_id}/reservar",
+          "action": "post",
+          "fields": [
+            {
+              "name": "vehiculo_id",
+              "required": true,
+              "location": "path",
+              "schema": {
+                "_type": "string",
+                "description": "",
+                "title": ""
+              }
+            }
+          ]
+        }
+      },
+      "list": {
+        "_type": "link",
+        "url": "/api/vehiculos/",
+        "action": "get"
+      }
+    }
+  },
+  "api-swagger": {
+    "list": {
+      "_type": "link",
+      "url": "/api-swagger/",
+      "action": "get"
+    }
+  }
+}
