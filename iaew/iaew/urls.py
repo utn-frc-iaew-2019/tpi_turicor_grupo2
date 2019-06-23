@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework_swagger.views import get_swagger_view
 
 from turicor import views
 
 router = routers.DefaultRouter()
+
+schema_view = get_swagger_view(title='IAEW 2019')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,4 +34,5 @@ urlpatterns = [
     path('api/reservas/', views.get_reservas_list),
     path('api/reservas/<codigo>', views.detalle_reserva),
     path('api/reservas/<codigo>/cancelar', views.cancelar_reserva),
+    path('api-swagger/', schema_view)
 ]
