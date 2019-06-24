@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -12,6 +13,7 @@ from .serializers import ReservasSerializer
 
 
 @api_view(['GET'])
+@login_required
 def get_paises_list(request):
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     # Get all countries
@@ -31,6 +33,7 @@ def get_paises_list(request):
 
 
 @api_view(['GET'])
+@login_required
 def get_ciudades_list(request, pais_id):
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     # Get ciudades from SOAP
@@ -50,6 +53,7 @@ def get_ciudades_list(request, pais_id):
 
 
 @api_view(['GET'])
+@login_required
 def get_vehiculos_list(request):
     # Get params
     ciudad_id = request.GET.get('ciudad_id', None)
@@ -58,9 +62,12 @@ def get_vehiculos_list(request):
         hasta = parse_datetime(request.GET.get('hasta', None))  # yyyy-mm-ddThh:mm:ss
     except ValueError:
         return Response(status=status.HTTP_400_BAD_REQUEST)  # Valid format but non-existent datetime.
+    except TypeError:
+        return Response({"detail": "Faltan los parametros para el rango de fechas."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    if ciudad_id is None or not ciudad_id.isdigit() or desde is None or hasta is None:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    if ciudad_id is None or not ciudad_id.isdigit():
+        return Response({"detail": "Falta la ciudad"}, status=status.HTTP_400_BAD_REQUEST)
 
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     # Get vehiculos from SOAP
@@ -99,6 +106,7 @@ def get_vehiculos_list(request):
 
 
 @api_view(['POST'])
+@login_required
 def reservar_vehiculo(request, vehiculo_id):
     lugar_retiro = request.data.get('lugar_retiro', None)
     lugar_devolucion = request.data.get('lugar_devolucion', None)
@@ -117,11 +125,18 @@ def reservar_vehiculo(request, vehiculo_id):
     client = Client(wsdl=wsdl_settings['url'])
 
     factory = client.type_factory('ns2')
+    user = request.user
+
+    try:
+        cliente = request.user.cliente
+    except Cliente.DoesNotExist:
+        cliente = Cliente(user=request.user, dni=11111111)  # TODO: Development Only
+        cliente.save()
 
     request = factory.ReservarVehiculoRequest(
         IdVehiculoCiudad=vehiculo_id,
-        ApellidoNombreCliente="Prueba",  # TODO: Get client info from auth.
-        NroDocumentoCliente=11111111,
+        ApellidoNombreCliente="%s, %s" % (user.last_name, user.first_name),
+        NroDocumentoCliente=cliente.dni,
         FechaHoraRetiro=desde,
         FechaHoraDevolucion=hasta,
         LugarRetiro=factory.LugarRetiroDevolucion(lugar_retiro),  # TODO: Validar 'Aeropuerto', 'TerminalBuses', 'Hotel'
@@ -132,15 +147,11 @@ def reservar_vehiculo(request, vehiculo_id):
         ReservarVehiculoRequest=request,
         _soapheaders={'Credentials': wsdl_settings['Credentials']})
 
-    # TODO: Remove this. Use Auth.
-    # DEBUG ONLY
-    Cliente.objects.get_or_create(pk=1, nombre="Prueba", apellido="Prueba", dni=1111111)
-
     # Serialize
     # respuesta.Reserva
     reserva = Reserva(
         codigo=respuesta.Reserva.CodigoReserva,
-        cliente_id=1,
+        cliente=cliente,
         precio_costo=respuesta.Reserva.TotalReserva,
         precio_venta=respuesta.Reserva.TotalReserva / Decimal(1 - settings.IAEW_SETTINGS['ganancia'])
     )
@@ -152,8 +163,12 @@ def reservar_vehiculo(request, vehiculo_id):
 
 
 @api_view(['GET'])
+@login_required
 def get_reservas_list(request):
-    cliente_id = 1  # TODO: Get client id.
+    try:
+        cliente_id = request.user.cliente.pk
+    except Cliente.DoesNotExist:
+        return Response({"detail": "El usuario no es cliente."}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     reservas = ReservasSerializer(Reserva.objects.filter(cliente_id=cliente_id), many=True)
 
@@ -161,7 +176,21 @@ def get_reservas_list(request):
 
 
 @api_view(['GET'])
+@login_required
 def detalle_reserva(request, codigo):
+    # Find
+    try:
+        reserva = Reserva.objects.get(codigo=codigo)
+    except Reserva.DoesNotExist:
+        return Response({'detail': "La reserva no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Authorize
+    try:
+        if reserva.cliente != request.user.cliente:
+            return Response({'detail': "La reserva no pertenece al cliente"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Cliente.DoesNotExist:
+        return Response({'detail': "El usuario no es cliente"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     # Get ciudades from SOAP
     client = Client(wsdl=wsdl_settings['url'])
@@ -194,7 +223,21 @@ def detalle_reserva(request, codigo):
 
 
 @api_view(['POST'])
+@login_required
 def cancelar_reserva(request, codigo):
+    # Find
+    try:
+        reserva = Reserva.objects.get(codigo=codigo)
+    except Reserva.DoesNotExist:
+        return Response({'detail': "La reserva no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Authorize
+    try:
+        if reserva.cliente != request.user.cliente:
+            return Response({'detail': "La reserva no pertenece al cliente"}, status=status.HTTP_401_UNAUTHORIZED)
+    except Cliente.DoesNotExist:
+        return Response({'detail': "El usuario no es cliente"}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     client = Client(wsdl=wsdl_settings['url'])
     respuesta = client.service.CancelarReserva(
