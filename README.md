@@ -17,3 +17,5 @@ En linux, python se encuentra en /usr/bin/python3.5 se pueden usar las versiones
 # Run
 
 > python manage.py runserver
+
+Before start using the api, login at: /api/auth/login/google-oauth2
