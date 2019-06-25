@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_datetime
@@ -8,8 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from zeep import Client
 
-from .models import Reserva, Cliente
-from .serializers import ReservasSerializer
+from .models import Reserva, Cliente, Vendedor
+from .serializers import ReservasSerializer, VendedorSerializer
 
 
 @api_view(['GET'])
@@ -54,6 +52,13 @@ def get_ciudades_list(request, pais_id):
 
 @api_view(['GET'])
 @login_required
+def vendedores(request):
+    serializer = VendedorSerializer(Vendedor.objects.all(), many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@login_required
 def get_vehiculos_list(request):
     # Get params
     ciudad_id = request.GET.get('ciudad_id', None)
@@ -92,7 +97,7 @@ def get_vehiculos_list(request):
             "marca": vehiculo.Marca,
             "modelo": vehiculo.Modelo,
             "cantidad_disponible": vehiculo.CantidadDisponible,
-            "precio_alquiler": vehiculo.PrecioPorDia / Decimal(1 - settings.IAEW_SETTINGS['ganancia']),
+            "precio_alquiler": vehiculo.PrecioPorDia * settings.IAEW_SETTINGS['ganancia'],
             "descripcion": {
                 "puntaje": vehiculo.Puntaje,
                 "cantidad_puertas": vehiculo.CantidadPuertas,
@@ -153,7 +158,7 @@ def reservar_vehiculo(request, vehiculo_id):
         codigo=respuesta.Reserva.CodigoReserva,
         cliente=cliente,
         precio_costo=respuesta.Reserva.TotalReserva,
-        precio_venta=respuesta.Reserva.TotalReserva / Decimal(1 - settings.IAEW_SETTINGS['ganancia'])
+        precio_venta=respuesta.Reserva.TotalReserva * settings.IAEW_SETTINGS['ganancia']
     )
     reserva.save()
 

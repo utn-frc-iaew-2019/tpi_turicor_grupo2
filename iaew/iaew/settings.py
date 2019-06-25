@@ -53,7 +53,7 @@ IAEW_SETTINGS = {
             'Password': 'XdSkx6A9NQ'
         }
     },
-    'ganancia': 0.20
+    'ganancia': 1.20
 }
 
 INSTALLED_APPS = [

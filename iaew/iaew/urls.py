@@ -26,6 +26,7 @@ schema_view = get_swagger_view(title='IAEW 2019')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/vendedores/', views.vendedores),
     path('api/paises/<int:pais_id>/ciudades/', views.get_ciudades_list),
     path('api/paises/', views.get_paises_list),
     path('api/vehiculos/', views.get_vehiculos_list),
