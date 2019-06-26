@@ -44,19 +44,72 @@
 <div class="container" role="main">
     <div class="jumbotron" ng-controller="reservasCtrl">
         <h1>{{ title }}</h1>
-        <form>
-            <div class="form-group">
-                <label>País</label>
-                <select class="form-control" ng-change="updateCiudades()" ng-model="reserva.pais"
-                        ng-options="pais.nombre for pais in paises"></select>
-            </div>
-            <div class="form-group">
-                <label>Ciudad</label>
-                <select class="form-control" ng-model="reserva.ciudad"
-                        ng-options="ciudad.nombre for ciudad in ciudades"></select>
-            </div>
-
-        </form>
+        <div ng-show="vehiculos == null">
+            <form>
+                <div class="form-group">
+                    <label>Vendedor</label>
+                    <select class="form-control" ng-model="reserva.vendedor"
+                            ng-options="vendedor.nombre for vendedor in vendedor"></select>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label>País</label>
+                            <select class="form-control" ng-change="updateCiudades()" ng-model="reserva.pais"
+                                    ng-options="pais.nombre for pais in paises"></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Ciudad</label>
+                            <select class="form-control" ng-model="reserva.ciudad"
+                                    ng-options="ciudad.nombre for ciudad in ciudades"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label>Desde</label>
+                            <input class="form-control" ng-model="reserva.desde" type="text">
+                        </div>
+                        <div class="col-6">
+                            <label>Hasta</label>
+                            <input class="form-control" ng-model="reserva.hasta" type="text">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" ng-click="buscarVehiculos()" type="submit">Buscar</button>
+            </form>
+        </div>
+        <div ng-show="vehiculos != null">
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Disponibles</th>
+                    <th>Precio</th>
+                    <th>Puntaje</th>
+                    <th>Pueras</th>
+                    <th>Aire Acond.</th>
+                    <th>Direccion Asis.</th>
+                    <th>Tipo Cambio</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="vehiculo in vehiculos">
+                    <td>{{ vehiculo.marca }}</td>
+                    <td>{{ vehiculo.modelo }}</td>
+                    <td>{{ vehiculo.cantidad_disponible }}</td>
+                    <td>{{ vehiculo.precio_alquiler|currency }}</td>
+                    <td>{{ vehiculo.descripcion.puntaje }}</td>
+                    <td>{{ vehiculo.descripcion.cantidad_puertas }}</td>
+                    <td>{{ vehiculo.descripcion.aire_acondicionado ? 'Si' : 'No' }}</td>
+                    <td>{{ vehiculo.descripcion.direccion_asistida ? 'Si' : 'No'}}</td>
+                    <td>{{ vehiculo.descripcion.tipo_cambio }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

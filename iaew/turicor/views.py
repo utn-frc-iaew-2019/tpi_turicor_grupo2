@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_datetime
@@ -65,8 +63,10 @@ def get_vehiculos_list(request):
     # Get params
     ciudad_id = request.GET.get('ciudad_id', None)
     try:
+        # TODO: Assert desde < hasta
         desde = parse_datetime(request.GET.get('desde', None))  # yyyy-mm-ddThh:mm:ss (optional timezone:-0300)
         hasta = parse_datetime(request.GET.get('hasta', None))  # yyyy-mm-ddThh:mm:ss
+        dias = (hasta - desde).total_seconds() / 60 / 60 / 24
     except ValueError:
         return Response(status=status.HTTP_400_BAD_REQUEST)  # Valid format but non-existent datetime.
     except TypeError:
@@ -99,7 +99,7 @@ def get_vehiculos_list(request):
             "marca": vehiculo.Marca,
             "modelo": vehiculo.Modelo,
             "cantidad_disponible": vehiculo.CantidadDisponible,
-            "precio_alquiler": vehiculo.PrecioPorDia * Decimal(settings.IAEW_SETTINGS['ganancia']),
+            "precio_alquiler": float(vehiculo.PrecioPorDia) * settings.IAEW_SETTINGS['ganancia'] * dias,
             "descripcion": {
                 "puntaje": vehiculo.Puntaje,
                 "cantidad_puertas": vehiculo.CantidadPuertas,
@@ -160,7 +160,7 @@ def reservar_vehiculo(request, vehiculo_id):
         codigo=respuesta.Reserva.CodigoReserva,
         cliente=cliente,
         precio_costo=respuesta.Reserva.TotalReserva,
-        precio_venta=respuesta.Reserva.TotalReserva * Decimal(settings.IAEW_SETTINGS['ganancia'])
+        precio_venta=float(respuesta.Reserva.TotalReserva) * settings.IAEW_SETTINGS['ganancia']
     )
     reserva.save()
 
