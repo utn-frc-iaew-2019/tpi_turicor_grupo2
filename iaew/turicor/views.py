@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_datetime
@@ -97,7 +99,7 @@ def get_vehiculos_list(request):
             "marca": vehiculo.Marca,
             "modelo": vehiculo.Modelo,
             "cantidad_disponible": vehiculo.CantidadDisponible,
-            "precio_alquiler": vehiculo.PrecioPorDia * settings.IAEW_SETTINGS['ganancia'],
+            "precio_alquiler": vehiculo.PrecioPorDia * Decimal(settings.IAEW_SETTINGS['ganancia']),
             "descripcion": {
                 "puntaje": vehiculo.Puntaje,
                 "cantidad_puertas": vehiculo.CantidadPuertas,
@@ -158,7 +160,7 @@ def reservar_vehiculo(request, vehiculo_id):
         codigo=respuesta.Reserva.CodigoReserva,
         cliente=cliente,
         precio_costo=respuesta.Reserva.TotalReserva,
-        precio_venta=respuesta.Reserva.TotalReserva * settings.IAEW_SETTINGS['ganancia']
+        precio_venta=respuesta.Reserva.TotalReserva * Decimal(settings.IAEW_SETTINGS['ganancia'])
     )
     reserva.save()
 
