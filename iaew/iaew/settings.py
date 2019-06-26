@@ -43,7 +43,7 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '751128658030-hcj5c07ic1549qsqca2v6h366t2tn7uh.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '3ffQKW8See8hy8WT44ViQilQ'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/static/index.html'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/web/index.html'
 
 IAEW_SETTINGS = {
     'wsdl': {
@@ -145,7 +145,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/web/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "../public_html"),
+    os.path.join(BASE_DIR, "../web"),
 ]

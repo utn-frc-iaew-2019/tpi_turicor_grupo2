@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>TURICOR - IAEW 2019</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+    <!-- Bootstrap -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- AngularJS -->
+    <script src="/web/src/angular-1.7.8/angular.min.js" type="application/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-resource.js"></script>
+    <script src="/web/src/app.js" type="application/javascript"></script>
+</head>
+<body ng-app="turicor">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="#">IAEW 2019 - TURICOR</a>
+    <button aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbarCollapse" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/auth/login/google-oauth2">Login</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" role="main">
+    <div class="jumbotron" ng-controller="reservasCtrl">
+        <h1>{{ title }}</h1>
+        <form>
+            <div class="form-group">
+                <label>País</label>
+                <select class="form-control" ng-change="updateCiudades()" ng-model="reserva.pais"
+                        ng-options="pais.nombre for pais in paises"></select>
+            </div>
+            <div class="form-group">
+                <label>Ciudad</label>
+                <select class="form-control" ng-model="reserva.ciudad"
+                        ng-options="ciudad.nombre for ciudad in ciudades"></select>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>
