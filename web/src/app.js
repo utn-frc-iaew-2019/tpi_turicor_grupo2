@@ -1,6 +1,6 @@
 var app = angular.module("turicor", ['ngResource']);
 
-app.controller("reservasCtrl", function ($scope, $resource) {
+app.controller("vehiculosCtrl", function ($scope, $resource) {
     $scope.title = "Consulta de Vehículos Disponibles";
 
     $scope.LUGAR_OPTIONS = [
@@ -71,5 +71,39 @@ app.controller("reservasCtrl", function ($scope, $resource) {
             $scope.vehiculos = null;
         });
     };
+
+});
+
+app.controller("reservasCtrl", function ($scope, $resource) {
+    $scope.title = "Mis Reservas";
+    $scope.viewReserva = null;
+
+    let reservasAPI = $resource("/api/reservas/:reservaCodigo", {}, {
+        all: {
+            url: "/api/reservas",
+            isArray: true
+        },
+        cancelar: {
+            method: "POST",
+            url: "/api/reservas/:reservaCodigo/cancelar"
+        }
+    });
+
+    $scope.reservas = reservasAPI.all();
+
+
+    $scope.cancelar = function (reserva) {
+        reservasAPI.cancelar({reservaCodigo: reserva.codigo}, {}, function () {
+            $scope.reservas = reservasAPI.all();
+        })
+    };
+
+    $scope.detalle = function (reserva) {
+        $scope.viewReserva = reserva;
+    };
+
+    $scope.lista = function () {
+        $scope.viewReserva = null;
+    }
 
 });

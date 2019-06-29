@@ -32,17 +32,20 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Inicio</a>
+                <a class="nav-link" href="/web/index.html">Inicio</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/api/auth/login/google-oauth2">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/web/reservas.html">Reservas</a>
             </li>
         </ul>
     </div>
 </nav>
 
 <div class="container" role="main">
-    <div class="jumbotron" ng-controller="reservasCtrl">
+    <div class="jumbotron" ng-controller="vehiculosCtrl">
         <h1>{{ title }}</h1>
         <div ng-show="vehiculos == null">
             <form>
