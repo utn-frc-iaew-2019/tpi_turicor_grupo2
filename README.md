@@ -34,4 +34,4 @@ Abrir una consola y ubicarse en el directorio principal.
 
 > python manage.py runserver
 
-Abrir [localhost:8000/](localhost:8000/)
+Abrir [localhost:8000/](https://localhost:8000/)
