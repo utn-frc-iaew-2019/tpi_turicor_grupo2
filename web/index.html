@@ -77,6 +77,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label>Retiro</label>
+                            <select class="form-control" ng-model="reserva.lugar_retiro"
+                                    ng-options="lugar for lugar in LUGAR_OPTIONS"></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Devolución</label>
+                            <select class="form-control" ng-model="reserva.lugar_devolucion"
+                                    ng-options="lugar for lugar in LUGAR_OPTIONS"></select>
+                        </div>
+                    </div>
+                </div>
                 <button class="btn btn-primary" ng-click="buscarVehiculos()" type="submit">Buscar</button>
             </form>
         </div>
@@ -93,6 +107,7 @@
                     <th>Aire Acond.</th>
                     <th>Direccion Asis.</th>
                     <th>Tipo Cambio</th>
+                    <th>Reservar</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -106,6 +121,10 @@
                     <td>{{ vehiculo.descripcion.aire_acondicionado ? 'Si' : 'No' }}</td>
                     <td>{{ vehiculo.descripcion.direccion_asistida ? 'Si' : 'No'}}</td>
                     <td>{{ vehiculo.descripcion.tipo_cambio }}</td>
+                    <td>
+                        <button class="btn btn-primary" ng-click="reservar(reserva, vehiculo)" type="button">Reservar
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
