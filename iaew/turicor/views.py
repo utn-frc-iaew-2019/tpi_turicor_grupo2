@@ -138,6 +138,8 @@ def reservar_vehiculo(request, vehiculo_id):
         return Response("Fechas invalidas",
                         status=status.HTTP_400_BAD_REQUEST)  # Valid format but non-existent datetime.
 
+    vendedor_id = request.data.get('vendedor_id', None)
+
     # Make reserva on SOAP
     wsdl_settings = settings.IAEW_SETTINGS['wsdl']
     client = Client(wsdl=wsdl_settings['url'])
@@ -171,7 +173,8 @@ def reservar_vehiculo(request, vehiculo_id):
         codigo=respuesta.Reserva.CodigoReserva,
         cliente=cliente,
         precio_costo=respuesta.Reserva.TotalReserva,
-        precio_venta=float(respuesta.Reserva.TotalReserva) * settings.IAEW_SETTINGS['ganancia']
+        precio_venta=float(respuesta.Reserva.TotalReserva) * settings.IAEW_SETTINGS['ganancia'],
+        vendedor_id=vendedor_id
     )
     reserva.save()
 
@@ -217,7 +220,9 @@ def detalle_reserva(request, codigo):
         _soapheaders={'Credentials': wsdl_settings['Credentials']})
 
     # Get precio reserva from BD
-    precio = Reserva.objects.get(codigo=codigo).precio_venta
+    local_res = Reserva.objects.get(codigo=codigo)
+    precio = local_res.precio_venta
+    vendedor = local_res.vendedor
 
     # Serialize
     reserva = {
@@ -232,6 +237,7 @@ def detalle_reserva(request, codigo):
         "lugar_retiro": respuesta.Reserva.LugarRetiro,
         "lugar_devolucion": respuesta.Reserva.LugarDevolucion,
         "precio": precio,
+        "vendedor": VendedorSerializer(vendedor).data,
         "vehiculo_id": respuesta.Reserva.VehiculoPorCiudadId,
         # respuesta.Reserva.VehiculoPorCiudadEntity.VehiculoEntity vuelve vacio.
         # No estan los datos del vehiculo ni la ciudad.

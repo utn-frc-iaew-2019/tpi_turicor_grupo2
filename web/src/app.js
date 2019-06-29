@@ -19,7 +19,9 @@ app.controller("vehiculosCtrl", function ($scope, $resource) {
         lugar_devolucion: $scope.LUGAR_OPTIONS[0],
     };
 
-    $scope.vendedores = $resource("/api/vendedores").query();
+    $scope.vendedores = $resource("/api/vendedores").query(function (vendedores) {
+        $scope.reserva.vendedor = vendedores[0];
+    });
 
     let paises = $resource("/api/paises");
     paises.query({}, function (paises) {
@@ -33,6 +35,8 @@ app.controller("vehiculosCtrl", function ($scope, $resource) {
 
     $scope.updateCiudades = function () {
         let pais = $scope.reserva.pais;
+        $scope.reserva.ciudad = null;
+        $scope.ciudades = null;
         ciudades.query({paisId: pais.id}, function (ciudades) {
             $scope.ciudades = ciudades;
             $scope.reserva.ciudad = ciudades[0];
@@ -64,7 +68,8 @@ app.controller("vehiculosCtrl", function ($scope, $resource) {
             desde: reserva.desde,
             hasta: reserva.hasta,
             lugar_retiro: reserva.lugar_retiro,
-            lugar_devolucion: reserva.lugar_devolucion
+            lugar_devolucion: reserva.lugar_devolucion,
+            vendedor_id: reserva.vendedor ? reserva.vendedor.id : null
         };
         body.vehiculoId = vehiculo.id;
         vehiculos.reservar({vehiculoId: vehiculo.id}, body, function () {

@@ -90,6 +90,9 @@
                             {{viewReserva.lugar_retiro}}
                         </li>
                         <li class="list-group-item">ID Vehiculo: {{viewReserva.vehiculo_id}}</li>
+                        <li class="list-group-item" ng-show="viewReserva.vendedor">Vendedor:
+                            {{viewReserva.vendedor.nombre}}
+                        </li>
                     </ul>
                 </div>
                 <div class="col-6">
