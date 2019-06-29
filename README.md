@@ -16,7 +16,7 @@ En linux, python se encuentra en /usr/bin/python3.5 se pueden usar las versiones
 
 > python manage.py migrate
 
-# Setup (Linux)
+# Setup (Windows)
 
 Install [Python 3.6](https://www.python.org/downloads/release/python-360/)
 
