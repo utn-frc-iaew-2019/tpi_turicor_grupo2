@@ -78,7 +78,35 @@
             </table>
         </div>
         <div ng-show="viewReserva != null">
-
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-primary" ng-click="lista()" type="button">Volver</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Codigo: {{viewReserva.codigo}}</li>
+                        <li class="list-group-item">Titular: {{viewReserva.nombre_apellido}}</li>
+                        <li class="list-group-item">Fecha Reserva: {{viewReserva.fecha_reserva|date}}</li>
+                        <li class="list-group-item">Retiro: {{viewReserva.fecha_hora_retiro|date}} en
+                            {{viewReserva.lugar_retiro}}
+                        </li>
+                        <li class="list-group-item">ID Vehiculo: {{viewReserva.vehiculo_id}}</li>
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Estado: {{viewReserva.estado}}</li>
+                        <li class="list-group-item">DNI: {{viewReserva.dni}}</li>
+                        <li class="list-group-item">Fecha Cancelacion: {{viewReserva.fecha_cancelacion|date}}</li>
+                        <li class="list-group-item">Devolucion: {{viewReserva.fecha_hora_devolucion|date}} en:
+                            {{viewReserva.lugar_devolucion}}
+                        </li>
+                        <li class="list-group-item">Precio: {{viewReserva.precio|currency}}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

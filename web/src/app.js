@@ -13,8 +13,8 @@ app.controller("vehiculosCtrl", function ($scope, $resource) {
         vendedor: null,
         pais: null,
         ciudad: null,
-        desde: "2019-01-01T00:00:0",
-        hasta: "2019-01-03T00:00:0",
+        desde: "2019-01-01T00:00:00",
+        hasta: "2019-01-03T00:00:00",
         lugar_retiro: $scope.LUGAR_OPTIONS[0],
         lugar_devolucion: $scope.LUGAR_OPTIONS[0],
     };
@@ -76,7 +76,9 @@ app.controller("vehiculosCtrl", function ($scope, $resource) {
 
 app.controller("reservasCtrl", function ($scope, $resource) {
     $scope.title = "Mis Reservas";
-    $scope.viewReserva = null;
+
+    $scope.viewReserva = null
+
 
     let reservasAPI = $resource("/api/reservas/:reservaCodigo", {}, {
         all: {
@@ -99,7 +101,10 @@ app.controller("reservasCtrl", function ($scope, $resource) {
     };
 
     $scope.detalle = function (reserva) {
-        $scope.viewReserva = reserva;
+        reservasAPI.get({reservaCodigo: reserva.codigo}, function (detalle) {
+            $scope.viewReserva = detalle;
+        });
+
     };
 
     $scope.lista = function () {
