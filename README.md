@@ -1,4 +1,4 @@
-# Setup (Linux)
+# Setup (Linux) on virtualenv
 
 > sudo apt-get install libxml2-dev libxslt1-dev python3.5 python3.5-dev
 
@@ -10,6 +10,22 @@ En linux, python se encuentra en /usr/bin/python3.5 se pueden usar las versiones
 
 > pip install -r requirements.txt
 
+> cd iaew
+
+> python manage.py makemigrations
+
+> python manage.py migrate
+
+# Setup (Linux)
+
+Install [Python 3.6](https://www.python.org/downloads/release/python-360/)
+
+Abrir una consola y ubicarse en el directorio principal.
+
+> python -m pip install -r requirements.txt
+
+> cd iaew
+
 > python manage.py makemigrations
 
 > python manage.py migrate
@@ -18,4 +34,4 @@ En linux, python se encuentra en /usr/bin/python3.5 se pueden usar las versiones
 
 > python manage.py runserver
 
-Navigate to [localhost:8000/](localhost:8000/)
+Abrir [localhost:8000/](localhost:8000/)
