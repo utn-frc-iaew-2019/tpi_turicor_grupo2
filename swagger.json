@@ -99,6 +99,13 @@
         "url": "/api/vehiculos/",
         "action": "get"
       }
+    },
+    "vendedores": {
+      "list": {
+        "_type": "link",
+        "url": "/api/vendedores/",
+        "action": "get"
+      }
     }
   },
   "api-swagger": {
