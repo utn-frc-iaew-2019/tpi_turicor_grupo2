@@ -13,7 +13,7 @@ from .serializers import ReservasSerializer, VendedorSerializer
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/web/index.html')
+        return redirect('/web/reservar.html')
     else:
         return redirect('/api/auth/login/google-oauth2')
 
@@ -61,6 +61,9 @@ def get_ciudades_list(request, pais_id):
 @api_view(['GET'])
 @login_required
 def vendedores(request):
+    if Vendedor.objects.all().count() == 0:
+        Vendedor(nombre="Grupo 2").save()
+
     serializer = VendedorSerializer(Vendedor.objects.all(), many=True)
     return Response(serializer.data)
 
