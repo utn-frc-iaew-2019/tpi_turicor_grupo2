@@ -25,7 +25,7 @@ router = routers.DefaultRouter()
 schema_view = get_swagger_view(title='IAEW 2019')
 
 urlpatterns = [
-    # TODO: Redirect / to /web/index.html
+    path('', views.login),
     path('admin/', admin.site.urls),
     path('api/vendedores/', views.vendedores),
     path('api/paises/<int:pais_id>/ciudades/', views.get_ciudades_list),

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -8,6 +9,13 @@ from zeep import Client
 
 from .models import Reserva, Cliente, Vendedor
 from .serializers import ReservasSerializer, VendedorSerializer
+
+
+def login(request):
+    if request.user.is_authenticated:
+        return redirect('/web/index.html')
+    else:
+        return redirect('/api/auth/login/google-oauth2')
 
 
 @api_view(['GET'])
